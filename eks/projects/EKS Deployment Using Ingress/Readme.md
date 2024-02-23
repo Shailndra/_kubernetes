@@ -54,9 +54,58 @@ kubectl version --client
 eksctl create cluster --name demo-cluster --version 1.29 --fargate
 ```
 
-## Contributing
+## Obtain kubeconfig
 
+```
+kubectl eks update-kubeconfig --name demo-cluster --region us-east-1
+```
 
+## Check attached nodes 
 
-## License
+```
+kubectl get nodes 
+```
 
+## Create fargate profile to run pods in different namespace
+
+```
+eksctl create fargateprofile \
+    --cluster demo-cluster \
+    --region <REGION_CODE> \
+    --name alb-2048-app \
+    --namespace game-2048
+
+```
+
+## Deploying deployment for ingress, deployment and service
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+```
+
+## Provide oidc authentication to the cluster
+
+```
+eksctl utils associate-iam-oidc-provider --cluster demo-cluster --approve
+```
+
+## Creating IAM policy
+```
+curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+```
+
+## Creating IAM role
+
+```
+eksctl create iamserviceaccount \
+  --cluster=<your-cluster-name> \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+```

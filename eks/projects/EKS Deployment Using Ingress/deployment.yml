@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eks-sample-linux-deployment
+  name: eks-2048-linux-deployment
   labels:
-    app: eks-sample-linux-app
+    app: eks-2048-linux-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: eks-sample-linux-app
+      app: eks-2048-linux-app
   template:
     metadata:
       labels:
-        app: eks-sample-linux-app
+        app: eks-2048-linux-app
     spec:
       affinity:
         nodeAffinity:
