@@ -48,6 +48,12 @@ kubectl version --client
 
 ```
 
+Installing [Helm](https://helm.sh/docs/intro/install/).
+
+```
+brew install helm 
+```
+
 ## Create Cluster
 
 ```
@@ -109,3 +115,30 @@ eksctl create iamserviceaccount \
   --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 ```
+
+## Installing Helm repo
+
+```
+helm repo add eks https://aws.github.io/eks-charts
+
+helm repo update eks
+```
+
+
+## Deploying alb ingress-controller using helm
+
+```
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=<your-cluster-name> \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=<region> \
+  --set vpcId=<your-vpc-id>
+```
+## Verifying deployments
+```
+kubectl get deployment -n kube-system aws-load-balancer-controller
+```
+
+## Creating IAM role
