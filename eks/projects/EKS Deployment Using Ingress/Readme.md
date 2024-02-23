@@ -108,7 +108,7 @@ aws iam create-policy \
 
 ```
 eksctl create iamserviceaccount \
-  --cluster=<your-cluster-name> \
+  --cluster=demo-cluster \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --role-name AmazonEKSLoadBalancerControllerRole \
@@ -130,7 +130,7 @@ helm repo update eks
 ```
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
-  --set clusterName=<your-cluster-name> \
+  --set clusterName=demo-cluster \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller \
   --set region=<region> \
@@ -139,6 +139,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 ## Verifying deployments
 ```
 kubectl get deployment -n kube-system aws-load-balancer-controller
+
+kubectl get ingress -n game-2048
 ```
 
-## Creating IAM role
